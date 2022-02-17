@@ -26,17 +26,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <link rel='icon' type='image/png' sizes='96x96' href='favicon-96x96.png'>
     <link rel='stylesheet' href='./css/common.css'>
 
-    <title>Hit Test with Anchors</title>
+    <title>A.R.I.D.O.A Demo</title>
   </head>
   <body>
     <header>
-      <details open>
-        <summary>Hit Test with Anchors</summary>
-        <p>
-          This sample demonstrates using hit testing to find intersections on real-world surfaces and then using Anchors to attach a virtual object to that location.
-          <a class="back" href="./">Back</a>
-        </p>
-      </details>
+      <h1>Demo for A.R.I.D.O.A</h1>
+      <p>
+        This demo demonstrates using hit testing to find intersections on real-world surfaces and then using Anchors to attach a virtual object to that location with GPS coordinates saved to revist later.
+      </p>
     </header>
     <script type="module">
       import {WebXRButton} from './js/util/webxr-button.js';
@@ -64,8 +61,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       arObject.visible = false;
       scene.addNode(arObject);
 
-      let flower = new Gltf2Node({url: 'media/gltf/sunflower/sunflower.gltf'});
-      arObject.addNode(flower);
+      let digitalObject = new Gltf2Node({url: 'media/gltf/headset/headset.gltf'});
+      arObject.addNode(digitalObject);
 
       let reticle = new Gltf2Node({url: 'media/gltf/reticle/reticle.gltf'});
       reticle.visible = false;
@@ -78,8 +75,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       vec3.set(shadow.scale, 0.15, 0.15, 0.15);
       arObject.addNode(shadow);
 
-      const MAX_FLOWERS = 30;
-      let flowers = [];
+      const MAX_DIGITAL_OBJECTS = 10;
+      let digitalObjects = [];
 
       // Ensure the background is transparent for AR.
       scene.clear = false;
@@ -142,6 +139,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
           session.requestAnimationFrame(onXRFrame);
         });
+
+        navigator.geolocation.getCurrentPosition(position => {
+          const { latitude, longitude } = position.coords;
+          // alert(`This is your: ${latitude}, ${longitude}`)
+        });
       }
 
       function onEndSession(session) {
@@ -155,13 +157,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         xrButton.setSession(null);
       }
 
-      const MAX_ANCHORED_OBJECTS = 30;
+      const MAX_ANCHORED_OBJECTS = 10;
       let anchoredObjects = [];
       function addAnchoredObjectsToScene(anchor) {
-        let flower = new Gltf2Node({url: 'media/gltf/sunflower/sunflower.gltf'});
-        scene.addNode(flower);
+        let digitalObject = new Gltf2Node({url: 'media/gltf/headset/headset.gltf'});
+        scene.addNode(digitalObject);
         anchoredObjects.push({
-          anchoredObject: flower,
+          anchoredObject: digitalObject,
           anchor: anchor
         });
 
@@ -173,6 +175,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           scene.removeNode(objectToRemove.anchoredObject);
           objectToRemove.anchor.delete();
         }
+
+        console.info(anchoredObjects)
       }
 
       let rayOrigin = vec3.create();
