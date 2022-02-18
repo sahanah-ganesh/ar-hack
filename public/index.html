@@ -45,6 +45,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       import {vec3} from './js/render/math/gl-matrix.js';
       import {Ray} from './js/render/math/ray.js';
 
+      // GPS globals.
+      let GPSCoords = {};
+
       // XR globals.
       let xrButton = null;
       let xrRefSpace = null;
@@ -75,8 +78,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       vec3.set(shadow.scale, 0.15, 0.15, 0.15);
       arObject.addNode(shadow);
 
-      const MAX_DIGITAL_OBJECTS = 10;
-      let digitalObjects = [];
+      const MAX_ANCHORED_OBJECTS = 10;
+      let anchoredObjects = [];
 
       // Ensure the background is transparent for AR.
       scene.clear = false;
@@ -139,11 +142,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
           session.requestAnimationFrame(onXRFrame);
         });
-
-        navigator.geolocation.getCurrentPosition(position => {
-          const { latitude, longitude } = position.coords;
-          // alert(`This is your: ${latitude}, ${longitude}`)
-        });
       }
 
       function onEndSession(session) {
@@ -157,8 +155,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         xrButton.setSession(null);
       }
 
-      const MAX_ANCHORED_OBJECTS = 10;
-      let anchoredObjects = [];
       function addAnchoredObjectsToScene(anchor) {
         let digitalObject = new Gltf2Node({url: 'media/gltf/headset/headset.gltf'});
         scene.addNode(digitalObject);
@@ -176,7 +172,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           objectToRemove.anchor.delete();
         }
 
-        console.info(anchoredObjects)
+        navigator.geolocation.getCurrentPosition(position => {
+          const { latitude, longitude } = position.coords;
+          alert(`These are your GPS coordinates: ${latitude} ${longitude}`)
+        });
       }
 
       let rayOrigin = vec3.create();
