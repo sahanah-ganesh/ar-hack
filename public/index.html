@@ -78,7 +78,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       vec3.set(shadow.scale, 0.15, 0.15, 0.15);
       arObject.addNode(shadow);
 
-      const MAX_ANCHORED_OBJECTS = 10;
+      const MAX_ANCHORED_OBJECTS = 5;
       let anchoredObjects = [];
 
       // Ensure the background is transparent for AR.
@@ -170,12 +170,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           let objectToRemove = anchoredObjects.shift();
           scene.removeNode(objectToRemove.anchoredObject);
           objectToRemove.anchor.delete();
+          navigator.geolocation.getCurrentPosition(position => {
+            const { latitude, longitude } = position.coords;
+            alert(`These are your GPS coordinates: ${latitude}, ${longitude}. Goodbye!`)
+          });
         }
-
-        navigator.geolocation.getCurrentPosition(position => {
-          const { latitude, longitude } = position.coords;
-          alert(`These are your GPS coordinates: ${latitude} ${longitude}`)
-        });
       }
 
       let rayOrigin = vec3.create();
